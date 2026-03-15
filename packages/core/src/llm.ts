@@ -31,6 +31,16 @@ export const Models = {
 	REASONING: "openai/o3",
 	/** Best for coding and agents ($3.00/$15.00 per 1M) */
 	CODING: "anthropic/claude-sonnet-4.6",
+	/** Cheapest vision-capable model ($0.10/$0.40 per 1M) — images+files */
+	VISION_CHEAP: "openai/gpt-4.1-nano",
+	/** Best price/quality vision with audio+video support ($0.30/$2.50 per 1M) */
+	VISION: "google/gemini-2.5-flash",
+	/** Strong vision + reasoning ($1.25/$10 per 1M) — audio+video input */
+	VISION_PRO: "google/gemini-2.5-pro",
+	/** Built-in thinking/reasoning with low cost ($0.30/$2.50 per 1M) */
+	THINKING: "google/gemini-2.5-flash",
+	/** Advanced thinking/reasoning ($1.25/$10 per 1M) */
+	THINKING_PRO: "google/gemini-2.5-pro",
 } as const;
 
 const DEFAULT_MODEL = Models.BALANCED;

@@ -12,9 +12,8 @@ import {
 	loadStatus,
 	saveStatus,
 } from "@mission/core";
-import type { HubClient, LLMClient, TaskContext } from "@mission/core";
-import { createLogger, printBanner, printSummary } from "./logger.js";
-import { printTaskList } from "./ui.js";
+import type { HubClient, LLMClient, TaskContext, TaskDefinition } from "@mission/core";
+import { createLogger, printBanner, printSummary, printTaskList } from "./logger.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(__dirname, "..", "..", "..");
@@ -56,11 +55,11 @@ async function runTask(name: string, dry: boolean): Promise<void> {
 		process.exit(1);
 	}
 
-	// 2. Discover tasks
+	// 2. Discover tasks and resolve name
 	const tasks = await discoverTasks(TASKS_DIR);
-	const task = tasks.get(name);
+	const { task, dirName: taskDirName, resolvedName } = await resolveTask(TASKS_DIR, tasks, name);
 
-	if (!task) {
+	if (!task || !taskDirName) {
 		log.error(`Task "${name}" not found`);
 		const available = [...tasks.keys()];
 		if (available.length > 0) {
@@ -71,8 +70,6 @@ async function runTask(name: string, dry: boolean): Promise<void> {
 		process.exit(1);
 	}
 
-	// 3. Find task directory and build context
-	const taskDirName = await findTaskDir(TASKS_DIR, name);
 	const taskDir = resolve(TASKS_DIR, taskDirName);
 	await ensureDataDir(taskDir);
 
@@ -107,7 +104,7 @@ async function runTask(name: string, dry: boolean): Promise<void> {
 		const durationMs = performance.now() - startTime;
 		printSummary({ cost: llmStats.cost, llmCalls: llmStats.calls, durationMs });
 
-		statuses[name] = {
+		statuses[resolvedName] = {
 			status: "completed",
 			lastRun: new Date().toISOString(),
 			cost: llmStats.cost,
@@ -120,7 +117,7 @@ async function runTask(name: string, dry: boolean): Promise<void> {
 			log.detail(error.stack);
 		}
 
-		statuses[name] = {
+		statuses[resolvedName] = {
 			status: "failed",
 			lastRun: new Date().toISOString(),
 			cost: llmStats.cost,
@@ -134,12 +131,61 @@ async function runTask(name: string, dry: boolean): Promise<void> {
 	}
 }
 
-async function findTaskDir(tasksDir: string, taskName: string): Promise<string> {
+/**
+ * Resolves a user-provided name to a task. Supports:
+ *   - task name:    "people"
+ *   - episode code: "s01e01"
+ *   - full dir:     "s01e01-people"
+ */
+async function resolveTask(
+	tasksDir: string,
+	tasks: Map<string, TaskDefinition>,
+	input: string,
+): Promise<{
+	task: TaskDefinition | undefined;
+	dirName: string | undefined;
+	resolvedName: string;
+}> {
+	// 1. Exact match by task name
+	if (tasks.has(input)) {
+		const dirName = await findDirByName(tasksDir, input);
+		return { task: tasks.get(input), dirName, resolvedName: input };
+	}
+
+	// 2. Match by episode code (s01e01) or full dir name (s01e01-people)
+	const normalized = input.toLowerCase();
 	let entries: string[];
 	try {
 		entries = await readdir(tasksDir);
 	} catch {
-		throw new Error(`Tasks directory not found: ${tasksDir}`);
+		return { task: undefined, dirName: undefined, resolvedName: input };
+	}
+
+	for (const entry of entries) {
+		const entryPath = join(tasksDir, entry);
+		const entryStat = await stat(entryPath);
+		if (!entryStat.isDirectory()) continue;
+
+		// Match "s01e01-people" exactly or "s01e01" as prefix
+		if (entry.toLowerCase() === normalized || entry.toLowerCase().startsWith(`${normalized}-`)) {
+			// Extract task name from directory (part after sXXeYY-)
+			const taskName = entry.replace(/^s\d+e\d+-/, "");
+			const task = tasks.get(taskName);
+			if (task) {
+				return { task, dirName: entry, resolvedName: taskName };
+			}
+		}
+	}
+
+	return { task: undefined, dirName: undefined, resolvedName: input };
+}
+
+async function findDirByName(tasksDir: string, taskName: string): Promise<string | undefined> {
+	let entries: string[];
+	try {
+		entries = await readdir(tasksDir);
+	} catch {
+		return undefined;
 	}
 
 	for (const entry of entries) {
@@ -151,8 +197,7 @@ async function findTaskDir(tasksDir: string, taskName: string): Promise<string> 
 			return entry;
 		}
 	}
-
-	throw new Error(`Task directory for "${taskName}" not found in ${tasksDir}`);
+	return undefined;
 }
 
 function createDryHubClient(hub: HubClient, log: ReturnType<typeof createLogger>): HubClient {

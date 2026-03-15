@@ -69,6 +69,10 @@ export interface TokenUsage {
 // Logger
 export interface Logger {
 	step(msg: string): void;
+	fetch(msg: string): void;
+	process(msg: string): void;
+	llm(msg: string): void;
+	send(msg: string): void;
 	success(msg: string): void;
 	warn(msg: string): void;
 	error(msg: string): void;

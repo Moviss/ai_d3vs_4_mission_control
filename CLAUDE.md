@@ -83,8 +83,8 @@ Implementation follows the step-by-step plan in `.ai/IMPLEMENTATION_PLAN.md`. Fu
 | 5 | CLI Logger (`cli/logger.ts`) | done |
 | 6 | LLM client (`core/llm.ts`) | done |
 | 7 | Task Registry (`core/task-registry.ts`) | done |
-| 8 | File helpers (`core/files.ts`) | pending |
-| 9 | HTTP Server (`core/server.ts`) | pending |
+| 8 | File helpers (`core/files.ts`) | done |
+| 9 | HTTP Server (`core/server.ts`) | done |
 | 10 | CLI entry point (`cli/index.ts`) | pending |
 | 11 | Integration & barrel export | pending |
 | 12 | Task S01E01 — sendit | pending |

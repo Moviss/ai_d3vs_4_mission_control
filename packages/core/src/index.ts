@@ -21,3 +21,4 @@ export type {
 
 export { loadEnv } from "./env.js";
 export { createHubClient } from "./hub.js";
+export { createLLMClient } from "./llm.js";

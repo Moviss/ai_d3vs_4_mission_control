@@ -81,7 +81,7 @@ Implementation follows the step-by-step plan in `.ai/IMPLEMENTATION_PLAN.md`. Fu
 | 3 | Env config (`core/env.ts`) | done |
 | 4 | Hub API client (`core/hub.ts`) | done |
 | 5 | CLI Logger (`cli/logger.ts`) | done |
-| 6 | LLM client (`core/llm.ts`) | pending |
+| 6 | LLM client (`core/llm.ts`) | done |
 | 7 | Task Registry (`core/task-registry.ts`) | pending |
 | 8 | File helpers (`core/files.ts`) | pending |
 | 9 | HTTP Server (`core/server.ts`) | pending |

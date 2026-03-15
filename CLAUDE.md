@@ -85,7 +85,7 @@ Implementation follows the step-by-step plan in `.ai/IMPLEMENTATION_PLAN.md`. Fu
 | 7 | Task Registry (`core/task-registry.ts`) | done |
 | 8 | File helpers (`core/files.ts`) | done |
 | 9 | HTTP Server (`core/server.ts`) | done |
-| 10 | CLI entry point (`cli/index.ts`) | pending |
+| 10 | CLI entry point (`cli/index.ts`) | done |
 | 11 | Integration & barrel export | pending |
 | 12 | Task S01E01 — sendit | pending |
 | 13 | Task S01E02 — findhim | pending |

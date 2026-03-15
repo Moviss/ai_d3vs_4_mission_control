@@ -12,19 +12,59 @@ import type {
 } from "./types.js";
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
-const DEFAULT_MODEL = "anthropic/claude-haiku-4.5";
 const DEFAULT_MAX_ITERATIONS = 5;
 
-// Pricing per 1M tokens (USD) — frequently used models
+/**
+ * Predefined model aliases for easy selection in tasks.
+ * Use `Models.CHEAP` instead of remembering full model IDs.
+ */
+export const Models = {
+	/** Ultra-cheap classifier/tagger ($0.10/$0.40 per 1M) */
+	CHEAP: "openai/gpt-4.1-nano",
+	/** Low-latency, good quality ($0.30/$2.50 per 1M) */
+	FAST: "google/gemini-2.5-flash",
+	/** Best price/quality for structured output ($0.40/$1.60 per 1M) */
+	BALANCED: "openai/gpt-4.1-mini",
+	/** Strong reasoning ($1.25/$10 per 1M) */
+	SMART: "google/gemini-2.5-pro",
+	/** Deep reasoning, chain-of-thought ($2.00/$8.00 per 1M) */
+	REASONING: "openai/o3",
+	/** Best for coding and agents ($3.00/$15.00 per 1M) */
+	CODING: "anthropic/claude-sonnet-4.6",
+} as const;
+
+const DEFAULT_MODEL = Models.BALANCED;
+
+// Pricing per 1M tokens (USD) — sourced from OpenRouter API (2026-03-15)
 const MODEL_PRICING: Record<string, { input: number; output: number }> = {
-	"anthropic/claude-haiku-4.5": { input: 0.8, output: 4 },
+	// Anthropic
+	"anthropic/claude-haiku-4.5": { input: 1, output: 5 },
 	"anthropic/claude-sonnet-4": { input: 3, output: 15 },
+	"anthropic/claude-sonnet-4.5": { input: 3, output: 15 },
+	"anthropic/claude-sonnet-4.6": { input: 3, output: 15 },
 	"anthropic/claude-opus-4": { input: 15, output: 75 },
+	"anthropic/claude-opus-4.5": { input: 5, output: 25 },
+	"anthropic/claude-opus-4.6": { input: 5, output: 25 },
+	// OpenAI
+	"openai/gpt-4.1-nano": { input: 0.1, output: 0.4 },
 	"openai/gpt-4.1-mini": { input: 0.4, output: 1.6 },
 	"openai/gpt-4.1": { input: 2, output: 8 },
-	"openai/gpt-4.1-nano": { input: 0.1, output: 0.4 },
-	"google/gemini-2.5-flash": { input: 0.15, output: 0.6 },
+	"openai/gpt-5-nano": { input: 0.05, output: 0.4 },
+	"openai/gpt-5-mini": { input: 0.25, output: 2 },
+	"openai/gpt-5": { input: 1.25, output: 10 },
+	"openai/gpt-5-pro": { input: 15, output: 120 },
+	"openai/o4-mini": { input: 1.1, output: 4.4 },
+	"openai/o3": { input: 2, output: 8 },
+	// Google
+	"google/gemini-2.5-flash": { input: 0.3, output: 2.5 },
+	"google/gemini-2.5-flash-lite": { input: 0.1, output: 0.4 },
 	"google/gemini-2.5-pro": { input: 1.25, output: 10 },
+	"google/gemini-3-flash-preview": { input: 0.5, output: 3 },
+	"google/gemini-3.1-pro-preview": { input: 2, output: 12 },
+	// DeepSeek
+	"deepseek/deepseek-chat-v3.1": { input: 0.15, output: 0.75 },
+	"deepseek/deepseek-v3.2": { input: 0.26, output: 0.38 },
+	"deepseek/deepseek-r1-0528": { input: 0.45, output: 2.15 },
 };
 
 interface OpenRouterResponse {

@@ -19,5 +19,6 @@ Zasady pracy:
 3. Implementuj zgodnie z planem, ale jeśli w trakcie odkryjesz lepsze rozwiązanie lub konieczną korektę — zastosuj je i wyjaśnij dlaczego.
 4. Po zakończeniu implementacji uruchom weryfikację opisaną w kroku (testy, build, dry-run).
 5. Napraw wszystkie błędy z weryfikacji zanim zakończysz.
-6. Na koniec: git status + krótkie podsumowanie co zostało zrobione i czy są uwagi do kolejnych kroków.
+6. Zaktualizuj tabelę "Implementation Progress" w CLAUDE.md — zmień status ukończonych kroków na `done`.
+7. Na koniec: git status + krótkie podsumowanie co zostało zrobione i czy są uwagi do kolejnych kroków.
 ```

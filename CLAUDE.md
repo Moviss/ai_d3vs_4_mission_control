@@ -68,7 +68,7 @@ export default {
 
 ## Lessons
 
-`lessons/` contains markdown files with course lesson content — best practices and guidelines for building AI agents. These are valuable reference material. `lessons/zadania/` contains earlier task solutions (ad-hoc, not following this project's conventions) — useful as logic reference only.
+`lessons/` contains markdown files with course lesson content — best practices and guidelines for building AI agents. These are valuable reference material and knowledge base for building tasks. When a lesson references code examples from the course repo, those examples can be found in the `examples/ai_devs_course/` git submodule (pointing to [i-am-alice/4th-devs](https://github.com/i-am-alice/4th-devs)). `lessons/zadania/` contains earlier task solutions (ad-hoc, not following this project's conventions) — useful as logic reference only.
 
 ## Implementation Progress
 

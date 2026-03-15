@@ -88,7 +88,7 @@ Implementation follows the step-by-step plan in `.ai/IMPLEMENTATION_PLAN.md`. Fu
 | 10 | CLI entry point (`cli/index.ts`) | done |
 | 11 | Integration & barrel export | done |
 | 12 | Task S01E01 — people | done |
-| 13 | Task S01E02 — findhim | pending |
+| 13 | Task S01E02 — findhim | done |
 | 14 | Task S01E03 — proxy | pending |
 | 15 | Task S01E04 — people | pending |
 | 16 | Task S01E05 — railway | pending |

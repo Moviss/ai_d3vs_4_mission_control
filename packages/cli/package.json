@@ -10,7 +10,8 @@
 		"start": "tsx src/index.ts"
 	},
 	"dependencies": {
-		"@mission/core": "workspace:*"
+		"@mission/core": "workspace:*",
+		"chalk": "^5.6.2"
 	},
 	"engines": {
 		"node": ">=24"

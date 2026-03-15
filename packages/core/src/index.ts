@@ -20,3 +20,4 @@ export type {
 } from "./types.js";
 
 export { loadEnv } from "./env.js";
+export { createHubClient } from "./hub.js";

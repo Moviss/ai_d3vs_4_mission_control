@@ -78,7 +78,7 @@ Implementation follows the step-by-step plan in `.ai/IMPLEMENTATION_PLAN.md`. Fu
 |------|-------------|--------|
 | 1 | Scaffold monorepo (workspaces, tsconfig, biome) | done |
 | 2 | Types and contracts (`core/types.ts`) | done |
-| 3 | Env config (`core/env.ts`) | pending |
+| 3 | Env config (`core/env.ts`) | done |
 | 4 | Hub API client (`core/hub.ts`) | pending |
 | 5 | CLI Logger (`cli/logger.ts`) | pending |
 | 6 | LLM client (`core/llm.ts`) | pending |

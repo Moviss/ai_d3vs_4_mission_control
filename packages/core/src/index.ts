@@ -18,3 +18,5 @@ export type {
 	EnvConfig,
 	TaskStatus,
 } from "./types.js";
+
+export { loadEnv } from "./env.js";

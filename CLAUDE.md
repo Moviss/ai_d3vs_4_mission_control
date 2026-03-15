@@ -90,6 +90,6 @@ Implementation follows the step-by-step plan in `.ai/IMPLEMENTATION_PLAN.md`. Fu
 | 12 | Task S01E01 — people | done |
 | 13 | Task S01E02 — findhim | done |
 | 14 | Task S01E03 — proxy | done |
-| 15 | Task S01E04 — people | pending |
+| 15 | Task S01E04 — sendit | done |
 | 16 | Task S01E05 — railway | pending |
 | 17 | Tests & quality gates | pending |

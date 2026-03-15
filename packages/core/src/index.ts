@@ -8,6 +8,7 @@ export type {
 	LLMClient,
 	ChatOptions,
 	StructuredOptions,
+	StructuredResult,
 	ChatResult,
 	TokenUsage,
 	Logger,

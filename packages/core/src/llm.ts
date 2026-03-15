@@ -6,6 +6,7 @@ import type {
 	Logger,
 	Message,
 	StructuredOptions,
+	StructuredResult,
 	TokenUsage,
 	ToolCall,
 	ToolDefinition,
@@ -287,7 +288,7 @@ export function createLLMClient(env: EnvConfig, logger: Logger): LLMClient {
 			};
 		},
 
-		async structured<T>(opts: StructuredOptions): Promise<T> {
+		async structured<T>(opts: StructuredOptions): Promise<StructuredResult<T>> {
 			const model = opts.model ?? DEFAULT_MODEL;
 
 			const messages: Message[] = [{ role: "system", content: opts.system }];
@@ -333,12 +334,23 @@ export function createLLMClient(env: EnvConfig, logger: Logger): LLMClient {
 					`Structured output — ${usage.prompt_tokens}+${usage.completion_tokens} tokens ($${cost.toFixed(4)})`,
 				);
 
-				return JSON.parse(choice.message.content ?? "{}") as T;
+				const tokenUsage: TokenUsage = {
+					promptTokens: usage.prompt_tokens,
+					completionTokens: usage.completion_tokens,
+					totalTokens: usage.prompt_tokens + usage.completion_tokens,
+					cost,
+				};
+
+				return {
+					data: JSON.parse(choice.message.content ?? "{}") as T,
+					usage: tokenUsage,
+				};
 			} catch (error) {
 				// Fallback: prompt-based JSON extraction if json_schema not supported
 				if (error instanceof Error && error.message.includes("json_schema")) {
 					logger.warn("json_schema not supported, falling back to prompt-based extraction");
-					return await structuredFallback<T>(model, messages, opts.schema);
+					const data = await structuredFallback<T>(model, messages, opts.schema);
+					return { data, usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0, cost: 0 } };
 				}
 				throw error;
 			}

@@ -158,7 +158,7 @@ export default {
 
 		const jobList = filtered.map((p, i) => `${i}. ${p.name} ${p.surname}: ${p.job}`).join("\n");
 
-		const tagResult = await ctx.llm.structured<{
+		const { data: tagResult } = await ctx.llm.structured<{
 			results: { index: number; tags: string[] }[];
 		}>({
 			model: "openai/gpt-4.1-mini",

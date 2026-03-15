@@ -225,9 +225,11 @@ function createTrackedLLMClient(llm: LLMClient): {
 				stats.cost += result.usage.cost;
 				return result;
 			},
-			async structured<T>(opts: Parameters<LLMClient["structured"]>[0]): Promise<T> {
+			async structured<T>(opts: Parameters<LLMClient["structured"]>[0]) {
 				stats.calls++;
-				return llm.structured<T>(opts);
+				const result = await llm.structured<T>(opts);
+				stats.cost += result.usage.cost;
+				return result;
 			},
 		},
 		stats,

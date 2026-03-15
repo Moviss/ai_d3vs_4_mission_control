@@ -35,7 +35,12 @@ export interface HubResponse {
 // LLM Client
 export interface LLMClient {
 	chat(opts: ChatOptions): Promise<ChatResult>;
-	structured<T>(opts: StructuredOptions): Promise<T>;
+	structured<T>(opts: StructuredOptions): Promise<StructuredResult<T>>;
+}
+
+export interface StructuredResult<T> {
+	data: T;
+	usage: TokenUsage;
 }
 
 export interface ChatOptions {

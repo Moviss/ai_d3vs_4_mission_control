@@ -66,6 +66,30 @@ export default {
 - Use [Conventional Commits](https://www.conventionalcommits.org/) for all commit messages (e.g. `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`).
 - **Never** add `Co-Authored-By` or any AI attribution lines to commit messages.
 
-## PRD
+## Lessons
 
-Full product requirements document is at `.ai/MISSION_CONTROL_PRD.md`.
+`lessons/` contains markdown files with course lesson content — best practices and guidelines for building AI agents. These are valuable reference material. `lessons/zadania/` contains earlier task solutions (ad-hoc, not following this project's conventions) — useful as logic reference only.
+
+## Implementation Progress
+
+Implementation follows the step-by-step plan in `.ai/IMPLEMENTATION_PLAN.md`. Full PRD is at `.ai/MISSION_CONTROL_PRD.md`.
+
+| Step | Description | Status |
+|------|-------------|--------|
+| 1 | Scaffold monorepo (workspaces, tsconfig, biome) | done |
+| 2 | Types and contracts (`core/types.ts`) | pending |
+| 3 | Env config (`core/env.ts`) | pending |
+| 4 | Hub API client (`core/hub.ts`) | pending |
+| 5 | CLI Logger (`cli/logger.ts`) | pending |
+| 6 | LLM client (`core/llm.ts`) | pending |
+| 7 | Task Registry (`core/task-registry.ts`) | pending |
+| 8 | File helpers (`core/files.ts`) | pending |
+| 9 | HTTP Server (`core/server.ts`) | pending |
+| 10 | CLI entry point (`cli/index.ts`) | pending |
+| 11 | Integration & barrel export | pending |
+| 12 | Task S01E01 — sendit | pending |
+| 13 | Task S01E02 — findhim | pending |
+| 14 | Task S01E03 — proxy | pending |
+| 15 | Task S01E04 — people | pending |
+| 16 | Task S01E05 — railway | pending |
+| 17 | Tests & quality gates | pending |

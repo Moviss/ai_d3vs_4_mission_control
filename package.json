@@ -1,0 +1,19 @@
+{
+	"name": "ai-d3vs-4-mission-control",
+	"private": true,
+	"type": "module",
+	"engines": {
+		"node": ">=24"
+	},
+	"scripts": {
+		"task": "pnpm --filter @mission/cli start"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": ["@biomejs/biome", "esbuild"]
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"tsx": "^4.19.4",
+		"typescript": "^5.8.2"
+	}
+}

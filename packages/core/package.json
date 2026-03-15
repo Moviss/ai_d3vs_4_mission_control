@@ -10,5 +10,8 @@
 	},
 	"engines": {
 		"node": ">=24"
+	},
+	"dependencies": {
+		"hono": "^4.12.8"
 	}
 }

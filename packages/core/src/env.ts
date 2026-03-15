@@ -56,8 +56,17 @@ export function loadEnv(rootDir?: string): EnvConfig {
 		);
 	}
 
-	return {
+	// Build config with all env vars (extra vars accessible via index signature)
+	const config: EnvConfig = {
 		openrouterApiKey: process.env.OPENROUTER_API_KEY as string,
 		ag3ntsApiKey: process.env.AG3NTS_API_KEY as string,
 	};
+
+	for (const [key, value] of Object.entries(fileVars)) {
+		if (!(key in config)) {
+			config[key] = process.env[key] ?? value;
+		}
+	}
+
+	return config;
 }

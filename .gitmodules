@@ -1,0 +1,3 @@
+[submodule "examples/ai_devs_course"]
+	path = examples/ai_devs_course
+	url = https://github.com/i-am-alice/4th-devs.git

@@ -92,4 +92,4 @@ Implementation follows the step-by-step plan in `.ai/IMPLEMENTATION_PLAN.md`. Fu
 | 14 | Task S01E03 — proxy | done |
 | 15 | Task S01E04 — sendit | done |
 | 16 | Task S01E05 — railway | done |
-| 17 | Tests & quality gates | pending |
+| 17 | Tests & quality gates | done |

@@ -1,27 +1,32 @@
 {
-	"people": {
-		"status": "completed",
-		"lastRun": "2026-03-15T22:36:50.266Z",
-		"cost": 0
-	},
-	"findhim": {
-		"status": "completed",
-		"lastRun": "2026-03-15T22:57:07.031Z",
-		"cost": 0
-	},
-	"proxy": {
-		"status": "completed",
-		"lastRun": "2026-03-15T23:17:01.478Z",
-		"cost": 0.001231
-	},
-	"sendit": {
-		"status": "completed",
-		"lastRun": "2026-03-15T23:43:54.578Z",
-		"cost": 0.0078905
-	},
-	"railway": {
-		"status": "completed",
-		"lastRun": "2026-03-16T00:31:22.324Z",
-		"cost": 0.0014420000000000001
-	}
+  "people": {
+    "status": "completed",
+    "lastRun": "2026-03-15T22:36:50.266Z",
+    "cost": 0
+  },
+  "findhim": {
+    "status": "completed",
+    "lastRun": "2026-03-15T22:57:07.031Z",
+    "cost": 0
+  },
+  "proxy": {
+    "status": "completed",
+    "lastRun": "2026-03-15T23:17:01.478Z",
+    "cost": 0.001231
+  },
+  "sendit": {
+    "status": "completed",
+    "lastRun": "2026-03-15T23:43:54.578Z",
+    "cost": 0.0078905
+  },
+  "railway": {
+    "status": "completed",
+    "lastRun": "2026-03-16T00:31:22.324Z",
+    "cost": 0.0014420000000000001
+  },
+  "categorize": {
+    "status": "completed",
+    "lastRun": "2026-03-16T21:11:47.365Z",
+    "cost": 0
+  }
 }

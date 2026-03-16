@@ -91,5 +91,5 @@ Implementation follows the step-by-step plan in `.ai/IMPLEMENTATION_PLAN.md`. Fu
 | 13 | Task S01E02 — findhim | done |
 | 14 | Task S01E03 — proxy | done |
 | 15 | Task S01E04 — sendit | done |
-| 16 | Task S01E05 — railway | pending |
+| 16 | Task S01E05 — railway | done |
 | 17 | Tests & quality gates | pending |

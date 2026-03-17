@@ -118,6 +118,18 @@ ai_d3vs_4_mission_control/
 └── .ai/                       # Project docs (PRD, implementation plan)
 ```
 
+## Claude Code Skills
+
+### `/aidevs4-explain <example-name>`
+
+Generates a detailed, step-by-step explanation of a course code example. Reads the corresponding lesson and all source files, then delivers knowledge in digestible chunks — one at a time, waiting for confirmation before proceeding.
+
+All chunks are saved to a single file at `examples/explanation/<example-name>/explanation.md` for future reference.
+
+```
+/aidevs4-explain 02_01_agentic_rag
+```
+
 ## Course Examples (git submodule)
 
 The `examples/ai_devs_course/` directory is a [git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules) pointing to [i-am-alice/4th-devs](https://github.com/i-am-alice/4th-devs) — code examples from each lesson.

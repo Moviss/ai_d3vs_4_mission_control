@@ -28,5 +28,10 @@
     "status": "completed",
     "lastRun": "2026-03-16T21:13:04.173Z",
     "cost": 0
+  },
+  "electricity": {
+    "status": "completed",
+    "lastRun": "2026-03-17T23:28:15.100Z",
+    "cost": 0.36723124999999995
   }
 }

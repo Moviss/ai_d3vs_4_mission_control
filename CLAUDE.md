@@ -93,3 +93,4 @@ Implementation follows the step-by-step plan in `.ai/IMPLEMENTATION_PLAN.md`. Fu
 | 15 | Task S01E04 — sendit | done |
 | 16 | Task S01E05 — railway | done |
 | 17 | Tests & quality gates | done |
+| 18 | Task S02E05 — drone | done |

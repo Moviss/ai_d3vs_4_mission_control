@@ -48,5 +48,10 @@
     "status": "completed",
     "lastRun": "2026-03-22T21:31:25.776Z",
     "cost": 0.0379954
+  },
+  "evaluation": {
+    "status": "completed",
+    "lastRun": "2026-03-23T22:13:07.450Z",
+    "cost": 0
   }
 }

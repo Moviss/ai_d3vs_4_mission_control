@@ -81,7 +81,27 @@
   },
   "windpower": {
     "status": "completed",
-    "lastRun": "2026-03-31T21:10:01.335Z",
+    "lastRun": "2026-03-31T21:13:20.329Z",
     "cost": 0
+  },
+  "domatowo": {
+    "status": "completed",
+    "lastRun": "2026-04-06T17:14:20.479Z",
+    "cost": 0
+  },
+  "filesystem": {
+    "status": "completed",
+    "lastRun": "2026-04-06T17:25:32.905Z",
+    "cost": 0
+  },
+  "foodwarehouse": {
+    "status": "completed",
+    "lastRun": "2026-04-06T17:38:48.401Z",
+    "cost": 0
+  },
+  "radiomonitoring": {
+    "status": "completed",
+    "lastRun": "2026-04-06T17:58:45.972Z",
+    "cost": 0.004768
   }
 }

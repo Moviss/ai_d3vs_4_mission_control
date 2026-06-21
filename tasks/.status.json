@@ -103,5 +103,25 @@
     "status": "completed",
     "lastRun": "2026-04-06T17:58:45.972Z",
     "cost": 0.004768
+  },
+  "phonecall": {
+    "status": "completed",
+    "lastRun": "2026-04-08T14:04:39.933Z",
+    "cost": 0.0019390999999999998
+  },
+  "shellaccess": {
+    "status": "completed",
+    "lastRun": "2026-04-09T20:38:48.751Z",
+    "cost": 0
+  },
+  "goingthere": {
+    "status": "completed",
+    "lastRun": "2026-04-10T22:02:26.649Z",
+    "cost": 0.0767183
+  },
+  "timetravel": {
+    "status": "completed",
+    "lastRun": "2026-04-10T23:10:18.704Z",
+    "cost": 0.0005044
   }
 }

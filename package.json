@@ -7,6 +7,7 @@
 	},
 	"scripts": {
 		"task": "pnpm --filter @mission/cli start",
+		"reader": "node reader/server.js",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"lint": "biome check .",
@@ -27,6 +28,7 @@
 		"vitest": "^4.1.0"
 	},
 	"dependencies": {
+		"node-edge-tts": "^1.2.10",
 		"sharp": "^0.34.5"
 	}
 }

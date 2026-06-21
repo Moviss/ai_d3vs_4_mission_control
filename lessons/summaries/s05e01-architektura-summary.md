@@ -4,6 +4,36 @@
 
 Lekcja odpowiada na pytanie: jak zaprojektować architekturę aplikacji, w której AI jest fundamentem, a nie dodatkiem? Kluczowy wniosek: zamiast projektować wokół "funkcjonalności" (czat, wiadomości, dokumenty), projektuj wokół **prymitywów** (zdarzenia, aktorzy, artefakty) — to daje elastyczność, której potrzebujesz, gdy "prosty czatbot" za miesiąc zmieni się w system wieloagentowy. Lekcja pokazuje konkretną architekturę Agent Graph łączącą Orchestratora, Blackboard, DAG Scheduler i Event Bus — oraz praktyczne podejście do integracji wielu providerów AI.
 
+## Model mentalny
+
+**Zdanie-klucz:** Architektura generatywnej aplikacji to nie tabela messages i endpoint /chat, lecz prymitywy (zdarzenia, aktorzy, artefakty) i deterministyczny scheduler zarządzający agentami.
+
+```mermaid
+flowchart TD
+    API["Wyspecjalizowane endpointy<br/>nie surowy /chat"]
+    API --> GW["AI Gateway<br/>multi-provider, centralizacja"]
+    GW --> ORCH["Orchestrator<br/>dekomponuje i deleguje"]
+    ORCH --> BB["Blackboard<br/>prymitywy: items, tasks,<br/>artifacts, relations"]
+    BB --> DAG["DAG Scheduler<br/>deterministyczny, bez LLM"]
+    DAG --> SPEC["Specjaliści<br/>ta sama struktura,<br/>różne narzędzia i prompty"]
+    SPEC --> MEM["Memory Cycle<br/>Observer → Reflector"]
+    MEM -. kolejna runda .-> DAG
+
+    classDef human fill:#1e3a5f,stroke:#60a5fa,color:#ececdf
+    classDef llm fill:#3b2817,stroke:#fbbf24,color:#ececdf
+    classDef output fill:#1a2e26,stroke:#34d399,color:#ececdf
+    classDef action fill:#2a1a3a,stroke:#a78bfa,color:#ececdf
+    class API human
+    class GW,ORCH llm
+    class BB,MEM output
+    class DAG,SPEC action
+```
+
+**Trzy przemiany myślenia, które ten diagram wymusza:**
+1. *Nie funkcjonalności, tylko prymitywy* — tabela `messages` z role/content to ślepy zaułek; polimorficzne `items` z typami zdarzeń rosną bez ALTER TABLE.
+2. *Nie LLM w schedulerze, tylko deterministyczny kod* — LLM decyduje CO robić, DAG Scheduler decyduje KIEDY — rozwiązywanie zależności i recovery to logika, nie prompt.
+3. *Nie różne klasy agentów, tylko flat implementation* — każdy agent ma tę samą strukturę; rolę determinują narzędzia i system prompt, nie hierarchia w kodzie.
+
 ## Mapa koncepcji
 
 - **Cechy generatywnych aplikacji** — Gateway, API, system plików, baza danych, zależności

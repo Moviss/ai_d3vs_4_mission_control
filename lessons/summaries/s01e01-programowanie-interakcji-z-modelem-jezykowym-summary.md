@@ -3,6 +3,33 @@
 ## O czym jest ta lekcja? (TL;DR)
 Lekcja pokazuje, że programowanie z LLM to nie "zadaj pytanie, dostań odpowiedź", lecz **sterowanie kontekstem za pomocą kodu** — łącznie z wieloma zapytaniami, routingiem, strukturyzowaniem wyników i projektowaniem zdarzeń. Uczysz się traktować model jako niedeterministyczną funkcję wbudowaną w deterministyczny kod, co wymaga zupełnie innego podejścia niż klasyczne programowanie. Kluczowa zmiana w myśleniu: zamiast walczyć z niedeterminizmem, projektujesz systemy, które go kontrolują poprzez kontekst, schematy i zdarzenia.
 
+## Model mentalny
+
+**Zdanie-klucz:** LLM to niedeterministyczna funkcja wbudowana w deterministyczny kod — jakość wyniku zależy od **kontekstu**, który składa programista, nie od magii w prompcie.
+
+```mermaid
+flowchart TD
+    P["PROGRAMISTA składa kontekst<br/>(stateless API)"]
+    P --> CTX["system • history • user • schema • tools"]
+    CTX --> L["LLM (autoregresyjny)<br/>token → token • no undo"]
+    L --> SO["Structured Output<br/>JSON Schema (strict)"]
+    SO --> SE["Semantic Event<br/>typ + id + meta"]
+    SE --> R["Routing → kolejne zapytanie"]
+    R -. pętla .-> P
+
+    classDef human fill:#1e3a5f,stroke:#60a5fa,color:#ececdf
+    classDef llm fill:#3b2817,stroke:#fbbf24,color:#ececdf
+    classDef output fill:#1a2e26,stroke:#34d399,color:#ececdf
+    class P human
+    class L llm
+    class SO,SE output
+```
+
+**Trzy przemiany myślenia, które ten diagram wymusza:**
+1. *Nie prompt, tylko kontekst* — walczysz o to, co wchodzi do LLM, nie o magiczne słowa w instrukcji.
+2. *Nie jedno zapytanie, tylko łańcuch* — jedno zapytanie klasyfikuje, drugie obsługuje; z perspektywy użytkownika to nadal "pytanie → odpowiedź".
+3. *Nie tekst, tylko zdarzenia* — wyjście modelu trafia do strukturalnego eventa, który można routować, archiwizować i rozbudowywać bez migracji bazy.
+
 ## Mapa koncepcji
 - **Tokeny i autoregresja** — fundament: model generuje tekst token po tokenie, gdzie każdy kolejny zależy od wszystkich poprzednich
   - **Bezstanowe API i okno kontekstowe** — każde zapytanie wymaga przesłania pełnego kontekstu, ograniczonego limitem tokenów

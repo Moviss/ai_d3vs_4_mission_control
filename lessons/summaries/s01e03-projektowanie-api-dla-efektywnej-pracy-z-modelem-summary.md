@@ -4,6 +4,36 @@
 
 Lekcja S01E02 pokazała zasady łączenia LLM z narzędziami z lotu ptaka. Ta lekcja schodzi na ziemię — uczy, jak **produkcyjnie** projektować interfejsy narzędzi (na przykładzie systemu plików), jak budować **serwery MCP** i łączyć je z natywnymi narzędziami, oraz jak podejmować decyzje architektoniczne: ile narzędzi, jakie schematy, co w odpowiedziach zwracać, a czego nie. Kluczowy wniosek: dobry interfejs narzędzia to nie kopia API, lecz przemyślany produkt z dynamicznymi wskazówkami, checksum'ami i dry-run'em.
 
+## Model mentalny
+
+**Zdanie-klucz:** Narzędzie dla modelu to **produkt** (tryby, hintsy, checksum, dry-run), nie wrapper — a MCP to tylko sposób jego **dystrybucji**, nie alternatywa dla narzędzi natywnych.
+
+```mermaid
+flowchart TD
+    API["API (np. filesystem)<br/>13 akcji"] -->|audyt| C
+    C["Konsolidacja<br/>13 → 4 narzędzia<br/>(Read • Write • Search • Manage)"]
+    C -->|tryby + hintsy + checksum + dryRun| T["Produkcyjne narzędzia<br/>z dynamicznymi wskazówkami"]
+    T -->|pakuje jako| MCP["MCP Server<br/>STDIO (lokalny)<br/>lub HTTP (zdalny)"]
+    MCP -->|prefix fs__, gmail__| H["Host<br/>unified toolset"]
+    N["Natywne narzędzia<br/>(JS, Python...)"] --> H
+    H --> L["LLM<br/>nie widzi różnicy"]
+
+    classDef human fill:#1e3a5f,stroke:#60a5fa,color:#ececdf
+    classDef action fill:#2a1a3a,stroke:#a78bfa,color:#ececdf
+    classDef output fill:#1a2e26,stroke:#34d399,color:#ececdf
+    classDef llm fill:#3b2817,stroke:#fbbf24,color:#ececdf
+    class API human
+    class C,T action
+    class MCP,H output
+    class N human
+    class L llm
+```
+
+**Trzy przemiany myślenia, które ten diagram wymusza:**
+1. *Nie wrapper, lecz produkt* — narzędzie ma tryby, hintsy, checksum i dry-run. To więcej kodu, ale AI pomaga go pisać, a brak tych elementów błędy eliminuje dopiero na produkcji (za późno).
+2. *Nie 13 akcji, lecz 4 narzędzia z trybami* — konsolidacja przez `mode`/`operation` redukuje szum w kontekście modelu, nie tracąc funkcjonalności.
+3. *Model nie wie, skąd pochodzi narzędzie* — MCP i natywne narzędzia trafiają do jednej listy przez unified toolset. MCP to warstwa dystrybucji (jeden serwer → wiele hostów), nie odrębny świat funkcjonalny.
+
 ## Mapa koncepcji
 
 - **Audyt API przed budowaniem narzędzi** — co sprawdzić zanim zaczniesz projektować

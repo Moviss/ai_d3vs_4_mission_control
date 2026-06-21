@@ -16,90 +16,63 @@
   <!-- Marked.js -->
   <script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
 
+  <!-- Mermaid (ESM, manual rendering) -->
+  <script>
+    // Promise that resolves once mermaid is loaded and initialized — renderSummary awaits this
+    // before calling mermaid.run() so the module-script load race is safe.
+    window.mermaidReady = new Promise((resolve) => { window.__resolveMermaid = resolve; });
+  </script>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'dark',
+      securityLevel: 'loose',
+      fontFamily: 'JetBrains Mono, monospace',
+      flowchart: { curve: 'basis', htmlLabels: true },
+    });
+    window.mermaid = mermaid;
+    window.__resolveMermaid();
+  </script>
+
   <style>
     /* ============================================================
-       DESIGN TOKENS
+       DESIGN TOKENS — dark only
        ============================================================ */
     :root {
       /* Page */
-      --bg-page: #faf9f5;
-      --bg-surface: #ffffff;
-      --bg-code: #f4f3ee;
-      --bg-toc: #f4f3ee;
-      --bg-hint: #fef9ee;
-
-      /* Text */
-      --text: #2c2c2e;
-      --text-secondary: #63635e;
-      --text-heading: #1a1a1e;
-      --text-faint: #9a9a95;
-
-      /* Borders */
-      --border: #e5e4dd;
-      --border-light: #eeede6;
-
-      /* Accent */
-      --accent: #b45309;
-      --accent-bg: #fef3c7;
-
-      /* Links */
-      --link: #2563eb;
-      --link-hover: #1d4ed8;
-
-      /* Season palette */
-      --s1: #3b82f6; --s1-bg: #eff6ff;
-      --s2: #059669; --s2-bg: #ecfdf5;
-      --s3: #d97706; --s3-bg: #fffbeb;
-      --s4: #7c3aed; --s4-bg: #f5f3ff;
-      --s5: #dc2626; --s5-bg: #fef2f2;
-
-      /* Code syntax */
-      --syn-keyword: #8250df;
-      --syn-string: #0a3069;
-      --syn-comment: #6e7781;
-      --syn-number: #0550ae;
-      --syn-title: #953800;
-      --syn-attr: #116329;
-      --syn-type: #953800;
-      --syn-tag: #116329;
-
-      /* Typography */
-      --font-body: 'Literata', Georgia, 'Times New Roman', serif;
-      --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
-      --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-      --fs: 18.5px;
-      --lh: 1.74;
-      --content-w: 41rem;
-    }
-
-    /* ---- Dark mode ---- */
-    html.dark {
       --bg-page: #18181b;
       --bg-surface: #222225;
       --bg-code: #27272a;
       --bg-toc: #222225;
       --bg-hint: #2a2720;
 
+      /* Text */
       --text: #d4d4cc;
       --text-secondary: #a1a19b;
       --text-heading: #ececdf;
       --text-faint: #71716c;
 
+      /* Borders */
       --border: #3a3a3e;
       --border-light: #30302f;
 
+      /* Accent */
       --accent: #fbbf24;
       --accent-bg: #3b3520;
 
+      /* Links */
       --link: #60a5fa;
       --link-hover: #93bbfd;
 
+      /* Season palette */
       --s1: #60a5fa; --s1-bg: #1e293b;
       --s2: #34d399; --s2-bg: #1a2e26;
       --s3: #fbbf24; --s3-bg: #2e2817;
       --s4: #a78bfa; --s4-bg: #25203a;
       --s5: #f87171; --s5-bg: #2e1a1a;
 
+      /* Code syntax */
       --syn-keyword: #d2a8ff;
       --syn-string: #a5d6ff;
       --syn-comment: #8b949e;
@@ -108,6 +81,14 @@
       --syn-attr: #7ee787;
       --syn-type: #ffa657;
       --syn-tag: #7ee787;
+
+      /* Typography */
+      --font-body: 'Literata', Georgia, 'Times New Roman', serif;
+      --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+      --fs: 18.5px;
+      --lh: 1.74;
+      --content-w: 41rem;
     }
 
     /* ============================================================
@@ -152,7 +133,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: var(--bg-page);
+      background: rgba(24, 24, 27, 0.85);
       border-bottom: 1px solid var(--border-light);
       padding: 0.6rem 1.5rem;
       display: flex;
@@ -163,8 +144,6 @@
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
-    html.dark .topbar { background: rgba(24,24,27,0.85); }
-    .topbar:not(.dark) { background: rgba(250,249,245,0.85); }
 
     .topbar-left { display: flex; align-items: center; gap: 0.75rem; }
     .topbar-left a { color: var(--text-secondary); text-decoration: none; font-weight: 500; }
@@ -181,25 +160,11 @@
       border-radius: 4px;
       color: #fff;
     }
-    [data-season="1"] .badge-season, .badge-season[data-s="1"] { background: var(--s1); }
-    [data-season="2"] .badge-season, .badge-season[data-s="2"] { background: var(--s2); }
-    [data-season="3"] .badge-season, .badge-season[data-s="3"] { background: var(--s3); }
-    [data-season="4"] .badge-season, .badge-season[data-s="4"] { background: var(--s4); }
-    [data-season="5"] .badge-season, .badge-season[data-s="5"] { background: var(--s5); }
-
-    /* Dark mode toggle */
-    .dm-toggle {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.3em 0.5em;
-      cursor: pointer;
-      font-size: 1rem;
-      line-height: 1;
-      color: var(--text-secondary);
-      transition: border-color 0.15s;
-    }
-    .dm-toggle:hover { border-color: var(--text-secondary); }
+    .badge-season[data-s="1"] { background: var(--s1); }
+    .badge-season[data-s="2"] { background: var(--s2); }
+    .badge-season[data-s="3"] { background: var(--s3); }
+    .badge-season[data-s="4"] { background: var(--s4); }
+    .badge-season[data-s="5"] { background: var(--s5); }
 
     /* ============================================================
        LAYOUT CONTAINER
@@ -264,12 +229,11 @@
     }
     .lesson-card:hover {
       border-color: var(--border);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
       transform: translateY(-1px);
       text-decoration: none;
       color: var(--text);
     }
-    html.dark .lesson-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 
     .lesson-card .ep {
       font-family: var(--font-mono);
@@ -440,6 +404,32 @@
       word-break: normal;
     }
 
+    /* ---- Mermaid diagrams ---- */
+    .content pre.mermaid {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 1.5rem 1rem;
+      margin: 1.8em -2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      line-height: 1.4;
+    }
+    /* Pre-render state: show raw source so user sees "something" during the brief render */
+    .content pre.mermaid:not([data-processed]) {
+      white-space: pre;
+      color: var(--text-faint);
+      justify-content: flex-start;
+    }
+    .content pre.mermaid svg {
+      max-width: 100%;
+      height: auto;
+    }
+
     /* ---- Blockquotes ---- */
     .content blockquote {
       border-left: 3px solid var(--accent);
@@ -528,10 +518,9 @@
     }
     .pager a:hover {
       border-color: var(--border);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
       text-decoration: none;
     }
-    html.dark .pager a:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
     .pager a[hidden] { display: none; }
     .pager .dir {
       font-family: var(--font-ui);
@@ -567,8 +556,8 @@
     .hljs-meta { color: var(--syn-keyword); }
     .hljs-property { color: var(--syn-number); }
     .hljs-punctuation { color: var(--text-secondary); }
-    .hljs-addition { color: #116329; background: rgba(46,160,67,0.1); }
-    .hljs-deletion { color: #82071e; background: rgba(248,81,73,0.1); }
+    .hljs-addition { color: #7ee787; background: rgba(46, 160, 67, 0.15); }
+    .hljs-deletion { color: #ffa198; background: rgba(248, 81, 73, 0.15); }
 
     /* ============================================================
        KEYBOARD SHORTCUT HINT
@@ -599,6 +588,10 @@
         padding-left: 1.5rem;
         padding-right: 1.5rem;
       }
+      .content pre.mermaid {
+        margin-left: -1rem;
+        margin-right: -1rem;
+      }
     }
 
     @media (max-width: 640px) {
@@ -614,6 +607,11 @@
         margin-right: -1rem;
         padding-left: 1rem;
         padding-right: 1rem;
+        border-radius: 0;
+      }
+      .content pre.mermaid {
+        margin-left: -1rem;
+        margin-right: -1rem;
         border-radius: 0;
       }
       .pager { flex-direction: column; }
@@ -636,9 +634,7 @@
       <a href="#/" id="topbar-home">AI_devs 4</a>
       <span id="topbar-badge"></span>
     </div>
-    <div class="topbar-right">
-      <button class="dm-toggle" onclick="toggleDark()" title="Tryb jasny/ciemny" aria-label="Przełącz tryb ciemny">🌙</button>
-    </div>
+    <div class="topbar-right"></div>
   </div>
 
   <!-- ==================== HOME VIEW ==================== -->
@@ -689,25 +685,6 @@
     let currentIdx = -1;
 
     /* ==========================================================
-       DARK MODE
-       ========================================================== */
-    function toggleDark() {
-      document.documentElement.classList.toggle('dark');
-      const isDark = document.documentElement.classList.contains('dark');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      document.querySelector('.dm-toggle').textContent = isDark ? '☀️' : '🌙';
-    }
-
-    (function initTheme() {
-      const saved = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (saved === 'dark' || (!saved && prefersDark)) {
-        document.documentElement.classList.add('dark');
-        document.querySelector('.dm-toggle').textContent = '☀️';
-      }
-    })();
-
-    /* ==========================================================
        MARKDOWN RENDERING
        ========================================================== */
     function slugify(text) {
@@ -726,6 +703,14 @@
 
       // Render with marked
       let html = marked.parse(md);
+
+      // Convert mermaid code blocks to <pre class="mermaid"> so mermaid.run() can find them.
+      // Marked escapes HTML inside code, but the browser decodes those entities when parsing
+      // innerHTML, so mermaid reads the original characters via textContent — no decoding needed.
+      html = html.replace(
+        /<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g,
+        '<pre class="mermaid">$1</pre>'
+      );
 
       // Add IDs to h2, h3 for TOC linking
       html = html.replace(/<h([23])>([\s\S]*?)<\/h\1>/g, (_, lvl, inner) => {
@@ -768,13 +753,14 @@
       }
 
       let html = '';
+
       for (const [season, lessons] of Object.entries(grouped)) {
         html += `<div class="season-group">
           <div class="season-label" data-season="${season}">Sezon ${season}</div>
           <div class="lesson-list">`;
         for (const l of lessons) {
           const ep = `S${String(l.season).padStart(2,'0')}E${String(l.episode).padStart(2,'0')}`;
-          html += `<a class="lesson-card" href="#/s/${encodeURIComponent(l.file)}">
+          html += `<a class="lesson-card" data-file="${l.file}" href="#/s/${encodeURIComponent(l.file)}">
             <span class="ep">${ep}</span>
             <span class="title">${l.title}</span>
           </a>`;
@@ -783,11 +769,25 @@
       }
 
       document.getElementById('lesson-list').innerHTML = html;
+
+      // Scroll to the last-viewed lesson card (if any), otherwise to top.
+      // Without this, returning from a summary leaves the window scrolled
+      // wherever the user was reading — disorienting when the layout changes.
+      if (currentIdx >= 0 && currentIdx < summaries.length) {
+        const lastFile = summaries[currentIdx].file;
+        const card = document.querySelector(`.lesson-card[data-file="${CSS.escape(lastFile)}"]`);
+        if (card) {
+          card.scrollIntoView({ block: 'center', behavior: 'auto' });
+          return;
+        }
+      }
+      window.scrollTo(0, 0);
     }
 
     /* ==========================================================
        SUMMARY VIEW
        ========================================================== */
+
     async function renderSummary(filename) {
       document.getElementById('home-view').hidden = true;
       document.getElementById('summary-view').hidden = false;
@@ -796,27 +796,28 @@
       // Show loading state
       document.getElementById('content').innerHTML = '<p style="color:var(--text-faint)">Ładowanie...</p>';
 
-      const res = await fetch(`/api/md/${encodeURIComponent(filename)}`);
-      if (!res.ok) { window.location.hash = '#/'; return; }
-      const md = await res.text();
-
-      // Find index for nav
+      // Find index for nav — also needed to know the source before fetching.
       currentIdx = summaries.findIndex(s => s.file === filename);
       const info = summaries[currentIdx];
       if (!info) { window.location.hash = '#/'; return; }
 
+      const res = await fetch(`/api/md/summaries/${encodeURIComponent(filename)}`);
+      if (!res.ok) { window.location.hash = '#/'; return; }
+      const md = await res.text();
+
       // Title
       const h1 = md.split('\n')[0].replace(/^#\s*/, '').replace(/\s*—\s*Podsumowanie$/, '');
       const ep = `S${String(info.season).padStart(2,'0')}E${String(info.episode).padStart(2,'0')}`;
+      const badgeKey = String(info.season);
 
       document.getElementById('summary-badge').textContent = ep;
-      document.getElementById('summary-badge').dataset.s = info.season;
+      document.getElementById('summary-badge').dataset.s = badgeKey;
       document.getElementById('summary-title').textContent = h1;
       document.title = `${ep} ${h1} — AI_devs 4`;
 
       // Topbar badge
       document.getElementById('topbar-badge').innerHTML =
-        `<span class="badge-season" data-s="${info.season}">${ep}</span>`;
+        `<span class="badge-season" data-s="${badgeKey}">${ep}</span>`;
 
       // Render content
       const html = renderMarkdown(md);
@@ -853,10 +854,22 @@
         document.getElementById('next-title').textContent = next.title;
       }
 
-      // Syntax highlighting
+      // Syntax highlighting for non-mermaid code blocks
       document.querySelectorAll('#content pre code').forEach(el => {
         hljs.highlightElement(el);
       });
+
+      // Render mermaid diagrams — wait for module to load, then run.
+      // suppressErrors keeps the page alive if a diagram has a syntax typo.
+      await window.mermaidReady;
+      try {
+        await window.mermaid.run({
+          querySelector: '#content pre.mermaid',
+          suppressErrors: true,
+        });
+      } catch (e) {
+        console.warn('Mermaid render error:', e);
+      }
     }
 
     /* ==========================================================

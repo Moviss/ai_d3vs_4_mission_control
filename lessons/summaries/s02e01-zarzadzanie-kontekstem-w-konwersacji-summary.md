@@ -4,6 +4,40 @@
 
 Context Engineering to nie "wrzuć wszystko do promptu" — to sztuka stwarzania warunków, w których agent sam buduje wartościowy kontekst. Ta lekcja uczy, jak projektować instrukcje systemowe agentów (generyczne, nie specyficzne), jak prowadzić agenta przez eksplorację zasobów (Agentic RAG), jak strukturyzować okno kontekstowe z myślą o prompt cache, i jak organizować przestrzeń współdzieloną między sesjami i agentami. Kluczowy wniosek: rola kodu maleje, rola kontekstu rośnie — ale to oznacza, że kod musi być jeszcze lepszy.
 
+## Model mentalny
+
+**Zdanie-klucz:** Context Engineering to nie "wrzuć wszystko do promptu", lecz projektowanie mapy, po której agent sam eksploruje zasoby — a stabilny system prompt trzyma cache narzędzi przy życiu.
+
+```mermaid
+flowchart TD
+    SP["System Prompt<br/>MAPA — zasady + otoczenie<br/>STATYCZNY"]
+    TO["Tools<br/>(pod system promptem<br/>→ cache OK)"]
+    UM["User Message<br/>dynamic env<br/>+ powtórzenia kluczowych instrukcji"]
+    L["Agent Loop<br/>skanuj → pogłęb<br/>→ eksploruj → weryfikuj"]
+    TD2["Lista zadań<br/>self-reminder<br/>(wypowiedź modelu)"]
+    WS["Workspace<br/>inbox / outbox / notes"]
+
+    SP --> L
+    TO --> L
+    UM --> L
+    L --> TD2
+    TD2 -. każdy krok .-> L
+    L --> WS
+    WS -. między sesjami .-> L
+
+    classDef human fill:#1e3a5f,stroke:#60a5fa,color:#ececdf
+    classDef llm fill:#3b2817,stroke:#fbbf24,color:#ececdf
+    classDef output fill:#1a2e26,stroke:#34d399,color:#ececdf
+    class SP,TO,UM human
+    class L llm
+    class TD2,WS output
+```
+
+**Trzy przemiany myślenia, które ten diagram wymusza:**
+1. *Nie GPS, tylko mapa* — system prompt opisuje otoczenie i zasady nawigacji, a nie sekwencję kroków; dzięki temu agent elastycznie radzi sobie z nieprzewidzianymi sytuacjami.
+2. *Nie system prompt, tylko wiadomość użytkownika* — dynamic data (godzina, gałąź git, otwarte pliki) musi trafić do user message, bo każda zmiana w system prompcie niszczy cache narzędzi pod spodem.
+3. *Nie top-K chunków, tylko eksploracja* — Agentic RAG zastępuje statyczne wyszukiwanie wieloetapowym procesem, w którym agent sam generuje i koryguje zapytania — a instrukcje mają być generyczne, bo "agent nie wie, o czym wie".
+
 ## Mapa koncepcji
 
 - **Instrukcja systemowa jako "mapa"** — uniwersalne reguły, otoczenie, sesja, zespół agentów

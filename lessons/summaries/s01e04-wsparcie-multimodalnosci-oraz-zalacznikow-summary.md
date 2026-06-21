@@ -4,6 +4,38 @@
 
 Agent AI generuje tylko tekst — ale dajemy mu "oczy" (analiza obrazu/wideo), "uszy" (transkrypcja/analiza audio) i "ręce do rysowania" (generowanie obrazów/wideo). Ta lekcja uczy, jak praktycznie zintegrować te zdolności: od przekazywania plików między narzędziami (wzorzec `<media>`), przez iteracyjne generowanie obrazów z JSON-owymi szablonami, po budowanie agentów analizujących YouTube i generujących wielostronicowe PDF-y. Kluczowy wniosek: multimodalność nie jest standardem — wymaga świadomego projektowania narzędzi i interfejsów.
 
+## Model mentalny
+
+**Zdanie-klucz:** Multimodalność to **interfejs**, nie feature — agent nie widzi ścieżki przesłanego obrazu, nie widzi tego co sam wygenerował, i **halucynuje wizualnie** tak samo jak tekstowo.
+
+```mermaid
+flowchart TD
+    U["Użytkownik<br/>+ plik"] -->|media tag| L
+    L["LLM<br/>widzi Base64, nie widzi ścieżki"]
+    L -->|"@file: w tool call"| R["Runtime<br/>rozwiązuje @file → Base64"]
+    R --> T["Narzędzie<br/>create_image • transcribe_audio"]
+    T -->|wynik zapisany, niewidoczny dla LLM| L
+    L -->|analyze_image / analyze_audio| V["Weryfikacja<br/>osobne zapytanie"]
+    V -. fail .-> L
+    V -->|pass| O["Finalny artefakt"]
+
+    classDef human fill:#1e3a5f,stroke:#60a5fa,color:#ececdf
+    classDef llm fill:#3b2817,stroke:#fbbf24,color:#ececdf
+    classDef action fill:#2a1a3a,stroke:#a78bfa,color:#ececdf
+    classDef output fill:#1a2e26,stroke:#34d399,color:#ececdf
+    classDef warning fill:#3f1a1a,stroke:#f87171,color:#ececdf
+    class U human
+    class L llm
+    class R,T action
+    class V warning
+    class O output
+```
+
+**Trzy przemiany myślenia, które ten diagram wymusza:**
+1. *Model nie widzi ścieżki, tylko Base64* — wzorzec `<media>` + referencje `@file:` to must-have, bez tego agent nie przekaże załącznika narzędziu.
+2. *Model nie widzi tego, co sam wygenerował* — `create_image` zwraca plik na dysku, ale LLM pozostaje "ślepy"; potrzebuje osobnego `analyze_image` do weryfikacji.
+3. *Halucynacje wizualne są subtelne* — 95% detali poprawnych, 5% z glitchami (dodatkowe palce, błędne litery). Iteracyjna pętla edit → analyze → refine to obrona, nie opcja.
+
 ## Mapa koncepcji
 
 - **Przekazywanie załączników agentom** — wzorzec `<media>` i referencje `@file:`

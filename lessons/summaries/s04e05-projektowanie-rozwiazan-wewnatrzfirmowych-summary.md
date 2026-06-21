@@ -4,6 +4,39 @@
 
 Lekcja pokazuje, jak wdrażać AI w organizacji — od najprostszych rozwiązań (dokument z promptem na Slacku) po dedykowane narzędzia z generatywnym interfejsem (MCP Apps). Kluczowy wniosek: wdrożenie AI to nie problem technologiczny, lecz **problem zmiany** — na styku organizacji, kultury i technologii. Najskuteczniejsza strategia to zaczynanie od małych, widocznych wygranych i stopniowe skalowanie, a nie budowanie rozbudowanego systemu od razu.
 
+## Model mentalny
+
+**Zdanie-klucz:** Wdrożenie AI w firmie to nie problem technologiczny, lecz problem zmiany — zacznij od dokumentu z promptem na Slacku, skaluj tylko gdy małe wygrywa.
+
+```mermaid
+flowchart TD
+    FORCES["Trzy siły blokujące<br/>organizacja × technika × ludzie"]
+    FORCES --> START["Zacznij małe<br/>dokument z promptem"]
+    FORCES --> QA["Query Awareness<br/>ekspert wstrzykuje kontekst,<br/>początkujący nie"]
+    START --> DEMO["Lead by example<br/>pokaż demo, nie pisz regulamin"]
+    DEMO --> REVIEW["Review Agent<br/>ten sam UI + różne prompty<br/>= różne procesy"]
+    REVIEW --> MCPAPP["MCP App<br/>deterministyczne akcje + AI"]
+    MCPAPP -. prove it small .-> START
+    QA --> MCPAPP
+    SEC["Bezpieczeństwo<br/>nie gdzie model,<br/>lecz co agent robi"]
+    REVIEW --> SEC
+    MCPAPP --> SEC
+
+    classDef human fill:#1e3a5f,stroke:#60a5fa,color:#ececdf
+    classDef action fill:#2a1a3a,stroke:#a78bfa,color:#ececdf
+    classDef output fill:#1a2e26,stroke:#34d399,color:#ececdf
+    classDef warning fill:#3f1a1a,stroke:#f87171,color:#ececdf
+    class FORCES,QA human
+    class START,DEMO action
+    class REVIEW,MCPAPP output
+    class SEC warning
+```
+
+**Trzy przemiany myślenia, które ten diagram wymusza:**
+1. *Nie technologia, tylko zmiana* — trzy siły (organizacyjna, techniczna, ludzka) wzajemnie się wzmacniają; pominięcie jednej osłabia resztę.
+2. *Nie budowanie systemu, tylko dokument z promptem* — jeden plik na Slacku (checklista, onboarding, styl) daje natychmiastową wartość i buduje adopcję bottom-up.
+3. *Nie zaufana infrastruktura, tylko ograniczone uprawnienia* — Bedrock/Azure chronią dane przed dostawcą, ale agent z dostępem do Internetu wciąż może je exfiltrować.
+
 ## Mapa koncepcji
 
 - **Trudność wdrożenia AI** — trzy nakładające się siły: organizacyjna, techniczna, ludzka

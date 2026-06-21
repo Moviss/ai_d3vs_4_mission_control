@@ -4,6 +4,45 @@
 
 Łączenie LLM z własnymi danymi to nie "podłącz i zapomnij" — to problem inżynieryjny obejmujący bezpieczeństwo, indeksowanie, wyszukiwanie i prezentację treści. Lekcja uczy, jak projektować systemy RAG (Retrieval-Augmented Generation) od prostych (system plików + grep) po złożone (hybrydowe wyszukiwanie FTS + embeddingi), i dlaczego dobór architektury musi wynikać z charakteru danych, a nie z mody na konkretne narzędzia. Kluczowy wniosek: nie istnieje jeden najlepszy sposób wyszukiwania — istnieje najlepszy sposób **dla Twojego problemu**.
 
+## Model mentalny
+
+**Zdanie-klucz:** RAG to nie "znajdź i wyślij", lecz wielowymiarowy problem inżynieryjny — chunki wiedzą o swoim kontekście, agent generuje dwa zapytania naraz, a bezpieczeństwo osiągasz zabieraniem narzędzi, nie filtrowaniem treści.
+
+```mermaid
+flowchart TD
+    Q["User query"]
+    A["Agent generuje<br/>DWA zapytania:<br/>keywords + natural"]
+    FTS["FTS / BM25<br/>ranking #1"]
+    EMB["Embedding → Vector store<br/>ranking #2"]
+    RRF["Reciprocal Rank Fusion<br/>scalony ranking"]
+    CH["Top chunks<br/>+ metadata (source, section)"]
+    L["LLM → answer"]
+    SEC["Zabierz agentowi<br/>ryzykowne tools<br/>(anti-injection)"]
+
+    Q --> A
+    A --> FTS
+    A --> EMB
+    FTS --> RRF
+    EMB --> RRF
+    RRF --> CH
+    CH --> L
+    SEC -. chroni agenta .-> L
+
+    classDef human fill:#1e3a5f,stroke:#60a5fa,color:#ececdf
+    classDef llm fill:#3b2817,stroke:#fbbf24,color:#ececdf
+    classDef output fill:#1a2e26,stroke:#34d399,color:#ececdf
+    classDef warning fill:#3f1a1a,stroke:#f87171,color:#ececdf
+    class Q human
+    class A,L llm
+    class FTS,EMB,RRF,CH output
+    class SEC warning
+```
+
+**Trzy przemiany myślenia, które ten diagram wymusza:**
+1. *Nie "najlepsze wyszukiwanie", tylko "najlepsze dla mojego problemu"* — system plików z grep często wystarczy, SQLite z FTS5 + sqlite-vec to solidny środek, Elasticsearch/Qdrant dopiero gdy masz ku temu realny powód.
+2. *Nie FTS albo embedding, tylko oba naraz* — FTS łapie precyzyjne terminy i nazwy, embedding łapie znaczenie i tłumaczenia między językami; RRF scala oba rankingi bez potrzeby normalizacji scoringów.
+3. *Nie filtr LLM, tylko architektura uprawnień* — filtr można oszukać, a zabranie agentowi `send_email` zamyka całą klasę ataków — bezpieczeństwo osiąga się na poziomie zestawu narzędzi, nie na poziomie treści.
+
 ## Mapa koncepcji
 
 - **Bezpieczeństwo zewnętrznego kontekstu** — agent przetwarzający obce dane jest jak formularz bez walidacji

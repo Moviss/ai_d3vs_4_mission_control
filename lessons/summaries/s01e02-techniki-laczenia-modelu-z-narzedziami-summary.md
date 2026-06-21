@@ -4,6 +4,37 @@
 
 Model językowy sam z siebie nie potrafi zrobić niczego poza generowaniem tekstu — ale dzięki Function Calling możemy dać mu "ręce", czyli narzędzia, którymi steruje przez JSON. Ta lekcja uczy, jak projektować te narzędzia mądrze: nie jako kopię 1:1 istniejącego API, ale jako przemyślany interfejs dopasowany do sposobu "myślenia" modelu. Oprócz tego poznajemy architekturę agenta AI, techniki optymalizacji i realne zagrożenia jak prompt injection.
 
+## Model mentalny
+
+**Zdanie-klucz:** Model nie **wykonuje** akcji — generuje JSON z **intencją**, a kod decyduje czy i jak ją zrealizować; agent to **pętla decyzyjna**, nie mózg z narzędziami.
+
+```mermaid
+flowchart TD
+    U["Użytkownik<br/>zapytanie"] --> L
+    T["Narzędzia<br/>definicje + opisy"] --> L
+    L["LLM<br/>wybiera tool + argumenty"]
+    L -->|JSON tool_call| H["Harness<br/>walidacja • whitelist • sandbox"]
+    H -->|wywołanie| E["Kod wykonuje<br/>API / CLI / MCP"]
+    E -->|wynik| L
+    L -->|brak tool_call| A["Odpowiedź<br/>dla użytkownika"]
+
+    classDef human fill:#1e3a5f,stroke:#60a5fa,color:#ececdf
+    classDef llm fill:#3b2817,stroke:#fbbf24,color:#ececdf
+    classDef warning fill:#3f1a1a,stroke:#f87171,color:#ececdf
+    classDef action fill:#2a1a3a,stroke:#a78bfa,color:#ececdf
+    classDef output fill:#1a2e26,stroke:#34d399,color:#ececdf
+    class U,T human
+    class L llm
+    class H warning
+    class E action
+    class A output
+```
+
+**Trzy przemiany myślenia, które ten diagram wymusza:**
+1. *Nie model wykonuje akcje, lecz kod na jego rozkaz* — LLM generuje JSON z intencją, harness decyduje co wykonać. Model staje się planistą, nie wykonawcą.
+2. *Nie kopiuj API 1:1, projektuj interfejs dla "kolegi bez docs"* — dobre narzędzie ma samoopisujące nazwy, jasne komunikaty błędów i łączy kilka endpointów w jedno (np. `workspace_metadata` zamiast 4 osobnych).
+3. *Bezpieczeństwo to kod, nie instrukcja w prompcie* — whitelist, izolacja kontekstu i dry-run trzymasz w harness. Model halucynuje adresy i ścieżki; kod nie.
+
 ## Mapa koncepcji
 
 - **Function Calling** — fundament łączenia LLM z zewnętrznym światem

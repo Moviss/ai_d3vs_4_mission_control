@@ -4,6 +4,38 @@
 
 Prototyp z LLM działa świetnie — problemy zaczynają się na produkcji. Ta lekcja to checklist wszystkiego, co pójdzie nie tak: limity kontekstu, halucynacje, koszty tokenów, stabilność API, rate limity, prompt injection, naruszenia polityk. Ale nie tylko diagnozuje problemy — pokazuje architekturę produkcyjnej aplikacji agentowej od A do Z: event-driven loop, ujednolicony interfejs providerów, monitorowanie, deployment. Kluczowy wniosek: 80% to klasyczna inżynieria, ale te 20% związane z AI wymaga fundamentalnie innego myślenia o kontroli, wydajności i bezpieczeństwie.
 
+## Model mentalny
+
+**Zdanie-klucz:** **80% to klasyczna inżynieria, 20% to AI** — ale te 20% wymusza nowy sposób myślenia o kontroli, wydajności i bezpieczeństwie w pozostałych 80%.
+
+```mermaid
+flowchart TD
+    U["Request<br/>(API / webhook)"] --> AL
+    AL["Event-driven Agent Loop<br/>start • turn • tool • wait • resume"]
+    AL -->|events| M["Monitoring + Persistence<br/>Langfuse • SQLite • Items"]
+    AL -->|LLM call| Pr["Provider Interface<br/>(wspólny) → OpenAI • Gemini"]
+    Pr --> AL
+    AL -->|tool call| TG["Tool Gate<br/>whitelist • Accept / Trust / Cancel"]
+    TG -.->|agent:wait / agent:resume| U
+    TG -->|result| AL
+
+    classDef human fill:#1e3a5f,stroke:#60a5fa,color:#ececdf
+    classDef llm fill:#3b2817,stroke:#fbbf24,color:#ececdf
+    classDef action fill:#2a1a3a,stroke:#a78bfa,color:#ececdf
+    classDef output fill:#1a2e26,stroke:#34d399,color:#ececdf
+    classDef warning fill:#3f1a1a,stroke:#f87171,color:#ececdf
+    class U human
+    class AL llm
+    class Pr action
+    class M output
+    class TG warning
+```
+
+**Trzy przemiany myślenia, które ten diagram wymusza:**
+1. *"Tak, wyślij" w czacie to nie zgoda* — potwierdzenia akcji muszą być deterministyczne (przycisk w UI), bo tekstową zgodę model może zignorować lub zinterpretować opacznie.
+2. *Gwarancja struktury ≠ gwarancja wartości* — Structured Output waliduje kształt JSON, nie poprawność danych. Krytyczne wartości weryfikujesz programistycznie lub osobnym zapytaniem.
+3. *Framework AI to dług techniczny* — Langchain/CrewAI starzeje się w miesiące. Wspólny interfejs providerów + własna event-driven logika jest bardziej odporny na zmiany modeli i API.
+
 ## Mapa koncepcji
 
 - **Wyzwania produkcyjne** — 10 obszarów, z którymi spotkasz się na produkcji
